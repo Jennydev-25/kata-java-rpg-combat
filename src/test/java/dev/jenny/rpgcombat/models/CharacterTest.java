@@ -86,4 +86,11 @@ public class CharacterTest {
                 () -> character.dealDamage(character, 100));
         assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to yourself")));
     }
+
+    @Test
+    void testHeal_WhenTargetIsNotSelf_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.heal(target, 100));
+        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself")));
+    }
 }
