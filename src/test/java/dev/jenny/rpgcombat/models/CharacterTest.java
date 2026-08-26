@@ -72,4 +72,11 @@ public class CharacterTest {
         character.heal(target, amount);
         assertThat(target.getHealth(), is(equalTo(1000)));
     }
+
+    @Test
+    void testHeal_WhenAmountIsNegative_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.heal(target, -50));
+        assertThat(exception.getMessage(), is(equalTo("Amount cannot be negative")));
+    }
 }
