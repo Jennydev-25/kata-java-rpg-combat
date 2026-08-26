@@ -79,4 +79,11 @@ public class CharacterTest {
                 () -> character.heal(target, -50));
         assertThat(exception.getMessage(), is(equalTo("Amount cannot be negative")));
     }
+
+    @Test
+    void testDealDamage_WhenTargetIsSelf_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.dealDamage(character, 100));
+        assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to yourself")));
+    }
 }
