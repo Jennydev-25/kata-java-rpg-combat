@@ -34,6 +34,9 @@ public class Character {
     }
 
     public void heal(Character target, int amount) {
+        if (!target.isAlive()) {
+            throw new IllegalStateException("Cannot heal a dead character");
+        }
         target.health = target.health + amount;
     }
 }
