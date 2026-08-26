@@ -27,6 +27,9 @@ public class Character {
     }
 
     public void dealDamage(Character target, int damage) {
+        if (damage < 0) {
+            throw new IllegalArgumentException("Damage cannot be negative");
+        }
         target.health = Math.max(0, target.health - damage);
     }
 }
