@@ -3,6 +3,7 @@ package dev.jenny.rpgcombat.models;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,5 +41,12 @@ public class CharacterTest {
         character.dealDamage(target, damage);
         assertThat(target.getHealth(), is(equalTo(0)));
         assertThat(target.isAlive(), is(false));
+    }
+
+    @Test
+    void testDealDamage_WhenDamageIsNegative_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.dealDamage(target, -100));
+        assertThat(exception.getMessage(), is(equalTo("Damage cannot be negative")));
     }
 }
