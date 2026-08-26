@@ -64,4 +64,12 @@ public class CharacterTest {
                 () -> character.heal(target, 100));
         assertThat(exception.getMessage(), is(equalTo("Cannot heal a dead character")));
     }
+
+    @ParameterizedTest(name = "healing by {0} should not raise health above 1000")
+    @ValueSource(ints = { 500, 700 })
+    void testHeal_WhenNewHealthExceedsMax_ShouldCapHealthAtMax(int amount) {
+        character.dealDamage(target, 500);
+        character.heal(target, amount);
+        assertThat(target.getHealth(), is(equalTo(1000)));
+    }
 }
