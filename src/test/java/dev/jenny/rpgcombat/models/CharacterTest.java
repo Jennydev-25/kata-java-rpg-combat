@@ -6,6 +6,8 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /** Tests for Character. */
 public class CharacterTest {
@@ -30,5 +32,13 @@ public class CharacterTest {
     void testDealDamage_WhenDamageIsLessThanHealth_ShouldReduceHealthByDamage() {
         character.dealDamage(target, 300);
         assertThat(target.getHealth(), is(equalTo(700)));
+    }
+
+    @ParameterizedTest(name = "damage {0} should reduce health to zero and kill the target")
+    @ValueSource(ints = { 1000, 1500 })
+    void testDealDamage_WhenDamageIsAtLeastHealth_ShouldReduceHealthToZeroAndKillTarget(int damage) {
+        character.dealDamage(target, damage);
+        assertThat(target.getHealth(), is(equalTo(0)));
+        assertThat(target.isAlive(), is(false));
     }
 }
