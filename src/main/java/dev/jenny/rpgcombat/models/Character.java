@@ -32,4 +32,8 @@ public class Character {
         }
         target.health = Math.max(0, target.health - damage);
     }
+
+    public void heal(Character target, int amount) {
+        target.health = target.health + amount;
+    }
 }
