@@ -25,4 +25,8 @@ public class Character {
     public boolean isAlive() {
         return health > 0;
     }
+
+    public void dealDamage(Character target, int damage) {
+        target.health -= damage;
+    }
 }
