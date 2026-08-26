@@ -27,6 +27,9 @@ public class Character {
     }
 
     public void dealDamage(Character target, int damage) {
+        if (target == this) {
+            throw new IllegalArgumentException("Cannot deal damage to yourself");
+        }
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative");
         }
