@@ -3,14 +3,14 @@ package dev.jenny.rpgcombat.models;
 /** Character that takes part in the fight. */
 public class Character {
 
-    private static final int INITIAL_HEALTH = 1000;
+    private static final int MAX_HEALTH = 1000;
     private static final int INITIAL_LEVEL = 1;
 
     private int health;
     private int level;
 
     public Character() {
-        this.health = INITIAL_HEALTH;
+        this.health = MAX_HEALTH;
         this.level = INITIAL_LEVEL;
     }
 
@@ -37,6 +37,6 @@ public class Character {
         if (!target.isAlive()) {
             throw new IllegalStateException("Cannot heal a dead character");
         }
-        target.health = target.health + amount;
+        target.health = Math.min(MAX_HEALTH, target.health + amount);
     }
 }
