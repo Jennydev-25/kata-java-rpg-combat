@@ -34,6 +34,9 @@ public class Character {
     }
 
     public void heal(Character target, int amount) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
         if (!target.isAlive()) {
             throw new IllegalStateException("Cannot heal a dead character");
         }
