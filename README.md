@@ -1,6 +1,6 @@
 # ⚔️ Kata RPG Combat – Combate por turnos en Java
 
-> Aquí no hay diplomacia: o subes de nivel, o te quedan 50 de Health
+> Aquí no hay diplomacia: o sigues `Alive`, o ya estás `Dead`
 
 Kata centrado en modelar por TDD las reglas de combate de un juego de rol: personajes con vida, nivel y facciones, daño y curación, rango de ataque y objetos no-personaje. Desarrollado siguiendo **TDD** con **JUnit 5 + Hamcrest**, y cobertura de tests medida con **JaCoCo**.
 
@@ -97,4 +97,21 @@ Retrospective
 
 ---
 
+## 🛠️ Tecnologías
 
+- **[Java 21](https://www.oracle.com/java/technologies/downloads/)** — Lenguaje de programación del proyecto
+- **[Apache Maven](https://maven.apache.org/)** — Gestor de dependencias y construcción del proyecto
+- **[JUnit 5](https://junit.org/junit5/)** — Framework de tests unitarios
+- **[Hamcrest](https://hamcrest.org/JavaHamcrest/)** — Librería de matchers para aserciones legibles
+- **[JaCoCo](https://www.jacoco.org/jacoco/)** — Medición de la cobertura de tests
+- **[Visual Studio Code](https://code.visualstudio.com/)** — Editor usado para desarrollar y gestionar el proyecto
+- **[Markdown](https://www.markdownguide.org/)** — Lenguaje de marcado para el README
+- **[Git](https://git-scm.com/)** / **[GitHub](https://github.com/)** — Control de versiones y alojamiento del proyecto
+
+---
+
+## 👩‍💻 Autora
+
+**[Jenny Sánchez Requejo](https://github.com/Jennydev-25)**
+
+[Volver arriba](#-kata-rpg-combat--combate-por-turnos-en-java)
