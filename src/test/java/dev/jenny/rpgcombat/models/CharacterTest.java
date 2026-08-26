@@ -56,4 +56,12 @@ public class CharacterTest {
         character.heal(target, 200);
         assertThat(target.getHealth(), is(equalTo(700)));
     }
+
+    @Test
+    void testHeal_WhenTargetIsDead_ShouldThrowIllegalStateException() {
+        character.dealDamage(target, 1000);
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> character.heal(target, 100));
+        assertThat(exception.getMessage(), is(equalTo("Cannot heal a dead character")));
+    }
 }
