@@ -49,4 +49,11 @@ public class CharacterTest {
                 () -> character.dealDamage(target, -100));
         assertThat(exception.getMessage(), is(equalTo("Damage cannot be negative")));
     }
+
+    @Test
+    void testHeal_WhenTargetIsAlive_ShouldIncreaseHealthByAmount() {
+        character.dealDamage(target, 500);
+        character.heal(target, 200);
+        assertThat(target.getHealth(), is(equalTo(700)));
+    }
 }
