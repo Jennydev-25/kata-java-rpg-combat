@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /** Tests for Character. */
@@ -114,5 +115,20 @@ public class CharacterTest {
         Character target = new Character();
 
         assertThrows(IllegalArgumentException.class, () -> melee.dealDamage(target, 10, 3));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "MELEE, 2, 100, 900",
+        "RANGED, 15, 100, 900"
+    })
+    void testDealDamage_WhenDistanceIsWithinRange_ShouldReduceTargetHealth(
+            AttackRange attackRange, int distance, int damage, int expectedHealth) {
+        Character attacker = new Character(1, attackRange);
+        Character target = new Character();
+
+        attacker.dealDamage(target, damage, distance);
+
+        assertThat(target.getHealth(), is(equalTo(expectedHealth)));
     }
 }
