@@ -227,4 +227,11 @@ public class CharacterTest {
 
         assertThat(target.getHealth(), is(equalTo(700)));
     }
+
+    @Test
+    void testTakeDamage_WhenDamageIsLessThanHealth_ShouldReduceHealthByDamage() {
+        character.takeDamage(300);
+
+        assertThat(character.getHealth(), is(equalTo(700)));
+    }
 }
