@@ -5,13 +5,18 @@ public class Character {
 
     private static final int MAX_HEALTH = 1000;
     private static final int INITIAL_LEVEL = 1;
+    private static final int LEVEL_DIFFERENCE_THRESHOLD = 5;
 
     private int health;
     private int level;
 
     public Character() {
+        this(INITIAL_LEVEL);
+    }
+
+    public Character(int level) {
         this.health = MAX_HEALTH;
-        this.level = INITIAL_LEVEL;
+        this.level = level;
     }
 
     public int getHealth() {
@@ -27,13 +32,25 @@ public class Character {
     }
 
     public void dealDamage(Character target, int damage) {
+        if (target == this) {
+            throw new IllegalArgumentException("Cannot deal damage to yourself");
+        }
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative");
         }
-        target.health = Math.max(0, target.health - damage);
+        int modifiedDamage = damage;
+        if (target.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
+            modifiedDamage = damage / 2;
+        } else if (this.level - target.level >= LEVEL_DIFFERENCE_THRESHOLD) {
+            modifiedDamage = damage + damage / 2;
+        }
+        target.health = Math.max(0, target.health - modifiedDamage);
     }
 
     public void heal(Character target, int amount) {
+        if (target != this) {
+            throw new IllegalArgumentException("Can only heal yourself");
+        }
         if (amount < 0) {
             throw new IllegalArgumentException("Amount cannot be negative");
         }

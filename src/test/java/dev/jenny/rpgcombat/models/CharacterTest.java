@@ -52,31 +52,59 @@ public class CharacterTest {
 
     @Test
     void testHeal_WhenTargetIsAlive_ShouldIncreaseHealthByAmount() {
-        character.dealDamage(target, 500);
-        character.heal(target, 200);
-        assertThat(target.getHealth(), is(equalTo(700)));
+        target.dealDamage(character, 500);
+        character.heal(character, 200);
+        assertThat(character.getHealth(), is(equalTo(700)));
     }
 
     @Test
     void testHeal_WhenTargetIsDead_ShouldThrowIllegalStateException() {
-        character.dealDamage(target, 1000);
+        target.dealDamage(character, 1000);
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> character.heal(target, 100));
+                () -> character.heal(character, 100));
         assertThat(exception.getMessage(), is(equalTo("Cannot heal a dead character")));
     }
 
     @ParameterizedTest(name = "healing by {0} should not raise health above 1000")
     @ValueSource(ints = { 500, 700 })
     void testHeal_WhenNewHealthExceedsMax_ShouldCapHealthAtMax(int amount) {
-        character.dealDamage(target, 500);
-        character.heal(target, amount);
-        assertThat(target.getHealth(), is(equalTo(1000)));
+        target.dealDamage(character, 500);
+        character.heal(character, amount);
+        assertThat(character.getHealth(), is(equalTo(1000)));
     }
 
     @Test
     void testHeal_WhenAmountIsNegative_ShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> character.heal(target, -50));
+                () -> character.heal(character, -50));
         assertThat(exception.getMessage(), is(equalTo("Amount cannot be negative")));
+    }
+
+    @Test
+    void testDealDamage_WhenTargetIsSelf_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.dealDamage(character, 100));
+        assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to yourself")));
+    }
+
+    @Test
+    void testHeal_WhenTargetIsNotSelf_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.heal(target, 100));
+        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself")));
+    }
+
+    @Test
+    void testDealDamage_WhenTargetIsAtLeast5Higher_ShouldReduceDamageByHalf() {
+        Character higherLevelTarget = new Character(6);
+        character.dealDamage(higherLevelTarget, 100);
+        assertThat(higherLevelTarget.getHealth(), is(equalTo(950)));
+    }
+
+    @Test
+    void testDealDamage_WhenAttackerIsAtLeast5Higher_ShouldIncreaseDamageByHalf() {
+        Character higherLevelAttacker = new Character(6);
+        higherLevelAttacker.dealDamage(target, 100);
+        assertThat(target.getHealth(), is(equalTo(850)));
     }
 }
