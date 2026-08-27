@@ -37,6 +37,9 @@ public class Character {
     }
 
     public void heal(Character target, int amount) {
+        if (target != this) {
+            throw new IllegalArgumentException("Can only heal yourself");
+        }
         if (amount < 0) {
             throw new IllegalArgumentException("Amount cannot be negative");
         }
