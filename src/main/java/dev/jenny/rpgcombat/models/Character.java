@@ -79,6 +79,10 @@ public class Character {
         return !Collections.disjoint(this.factions, other.factions);
     }
 
+    public void takeDamage(int damage) {
+        health = Math.max(0, health - damage);
+    }
+
     private void validateAttack(Character target, int damage, int distance) {
         if (target == this) {
             throw new IllegalArgumentException("Cannot deal damage to yourself");
