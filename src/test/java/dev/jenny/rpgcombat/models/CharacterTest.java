@@ -100,4 +100,11 @@ public class CharacterTest {
         character.dealDamage(higherLevelTarget, 100);
         assertThat(higherLevelTarget.getHealth(), is(equalTo(950)));
     }
+
+    @Test
+    void testDealDamage_WhenAttackerIsAtLeast5Higher_ShouldIncreaseDamageByHalf() {
+        Character higherLevelAttacker = new Character(6);
+        higherLevelAttacker.dealDamage(target, 100);
+        assertThat(target.getHealth(), is(equalTo(850)));
+    }
 }
