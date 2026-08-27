@@ -1,7 +1,7 @@
 package dev.jenny.rpgcombat.models;
 
 /** A non-character object that can take damage and be destroyed. */
-public class Prop {
+public class Prop implements Damageable {
 
     private int health;
 
