@@ -214,4 +214,17 @@ public class CharacterTest {
                 () -> character.dealDamage(target, 100));
         assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to an ally")));
     }
+
+    @Test
+    void testHeal_WhenTargetIsAlly_ShouldIncreaseHealthByAmount() {
+        Faction rebels = new Faction("Rebels");
+        Character attacker = new Character();
+        attacker.dealDamage(target, 500);
+        character.joinFaction(rebels);
+        target.joinFaction(rebels);
+
+        character.heal(target, 200);
+
+        assertThat(target.getHealth(), is(equalTo(700)));
+    }
 }
