@@ -39,6 +39,10 @@ public class Character {
     }
 
     public void dealDamage(Character target, int damage) {
+        dealDamage(target, damage, 0);
+    }
+
+    public void dealDamage(Character target, int damage, int distance) {
         if (target == this) {
             throw new IllegalArgumentException("Cannot deal damage to yourself");
         }
