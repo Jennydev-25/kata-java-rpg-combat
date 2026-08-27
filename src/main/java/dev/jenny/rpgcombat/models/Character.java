@@ -49,6 +49,9 @@ public class Character {
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative");
         }
+        if (distance > this.attackRange.getMeters()) {
+            throw new IllegalArgumentException("Target is out of range");
+        }
         int modifiedDamage = damage;
         if (target.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
             modifiedDamage = damage / 2;
