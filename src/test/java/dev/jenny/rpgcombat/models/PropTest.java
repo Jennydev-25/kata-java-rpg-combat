@@ -16,4 +16,13 @@ public class PropTest {
         assertThat(tree.getHealth(), is(equalTo(2000)));
         assertThat(tree.isDestroyed(), is(false));
     }
+
+    @Test
+    void testTakeDamage_WhenDamageIsLessThanHealth_ShouldReduceHealthByDamage() {
+        Prop tree = new Prop(2000);
+
+        tree.takeDamage(300);
+
+        assertThat(tree.getHealth(), is(equalTo(1700)));
+    }
 }
