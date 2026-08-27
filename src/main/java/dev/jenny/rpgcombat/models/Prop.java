@@ -16,4 +16,8 @@ public class Prop {
     public boolean isDestroyed() {
         return health <= 0;
     }
+
+    public void takeDamage(int damage) {
+        health = Math.max(0, health - damage);
+    }
 }
