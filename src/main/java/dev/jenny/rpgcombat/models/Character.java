@@ -1,5 +1,9 @@
 package dev.jenny.rpgcombat.models;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /** Character that takes part in the fight. */
 public class Character {
 
@@ -11,6 +15,7 @@ public class Character {
     private int health;
     private int level;
     private final AttackRange attackRange;
+    private final Set<Faction> factions = new HashSet<>();
 
     public Character() {
         this(INITIAL_LEVEL);
@@ -32,6 +37,10 @@ public class Character {
 
     public int getLevel() {
         return level;
+    }
+
+    public Set<Faction> getFactions() {
+        return Collections.unmodifiableSet(factions);
     }
 
     public boolean isAlive() {
