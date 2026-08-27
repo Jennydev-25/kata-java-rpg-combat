@@ -52,18 +52,7 @@ public class Character {
     }
 
     public void dealDamage(Character target, int damage, int distance) {
-        if (target == this) {
-            throw new IllegalArgumentException("Cannot deal damage to yourself");
-        }
-        if (damage < 0) {
-            throw new IllegalArgumentException("Damage cannot be negative");
-        }
-        if (distance > this.attackRange.getMeters()) {
-            throw new IllegalArgumentException("Target is out of range");
-        }
-        if (this.isAllyOf(target)) {
-            throw new IllegalStateException("Cannot deal damage to an ally");
-        }
+        validateAttack(target, damage, distance);
         int modifiedDamage = damage;
         if (target.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
             modifiedDamage = damage / 2;
@@ -74,15 +63,7 @@ public class Character {
     }
 
     public void heal(Character target, int amount) {
-        if (target != this && !this.isAllyOf(target)) {
-            throw new IllegalArgumentException("Can only heal yourself or an ally");
-        }
-        if (amount < 0) {
-            throw new IllegalArgumentException("Amount cannot be negative");
-        }
-        if (!target.isAlive()) {
-            throw new IllegalStateException("Cannot heal a dead character");
-        }
+        validateHeal(target, amount);
         target.health = Math.min(MAX_HEALTH, target.health + amount);
     }
 
@@ -96,5 +77,32 @@ public class Character {
 
     public boolean isAllyOf(Character other) {
         return !Collections.disjoint(this.factions, other.factions);
+    }
+
+    private void validateAttack(Character target, int damage, int distance) {
+        if (target == this) {
+            throw new IllegalArgumentException("Cannot deal damage to yourself");
+        }
+        if (damage < 0) {
+            throw new IllegalArgumentException("Damage cannot be negative");
+        }
+        if (distance > this.attackRange.getMeters()) {
+            throw new IllegalArgumentException("Target is out of range");
+        }
+        if (this.isAllyOf(target)) {
+            throw new IllegalStateException("Cannot deal damage to an ally");
+        }
+    }
+
+    private void validateHeal(Character target, int amount) {
+        if (target != this && !this.isAllyOf(target)) {
+            throw new IllegalArgumentException("Can only heal yourself or an ally");
+        }
+        if (amount < 0) {
+            throw new IllegalArgumentException("Amount cannot be negative");
+        }
+        if (!target.isAlive()) {
+            throw new IllegalStateException("Cannot heal a dead character");
+        }
     }
 }
