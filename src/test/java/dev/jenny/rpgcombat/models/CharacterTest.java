@@ -109,12 +109,17 @@ public class CharacterTest {
         assertThat(target.getHealth(), is(equalTo(850)));
     }
 
-    @Test
-    void testDealDamage_WhenTargetIsOutOfRange_ShouldThrowIllegalArgumentException() {
-        Character melee = new Character(1, AttackRange.MELEE);
+    @ParameterizedTest
+    @CsvSource({
+        "MELEE, 3",
+        "RANGED, 25"
+    })
+    void testDealDamage_WhenDistanceExceedsRange_ShouldThrowIllegalArgumentException(
+            AttackRange attackRange, int distance) {
+        Character attacker = new Character(1, attackRange);
         Character target = new Character();
 
-        assertThrows(IllegalArgumentException.class, () -> melee.dealDamage(target, 10, 3));
+        assertThrows(IllegalArgumentException.class, () -> attacker.dealDamage(target, 10, distance));
     }
 
     @ParameterizedTest
