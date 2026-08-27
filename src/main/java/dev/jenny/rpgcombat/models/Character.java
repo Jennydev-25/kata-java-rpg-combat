@@ -5,13 +5,13 @@ public class Character {
 
     private static final int MAX_HEALTH = 1000;
     private static final int INITIAL_LEVEL = 1;
+    private static final int LEVEL_DIFFERENCE_THRESHOLD = 5;
 
     private int health;
     private int level;
 
     public Character() {
-        this.health = MAX_HEALTH;
-        this.level = INITIAL_LEVEL;
+        this(INITIAL_LEVEL);
     }
 
     public Character(int level) {
@@ -39,9 +39,9 @@ public class Character {
             throw new IllegalArgumentException("Damage cannot be negative");
         }
         int modifiedDamage = damage;
-        if (target.level - this.level >= 5) {
+        if (target.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
             modifiedDamage = damage / 2;
-        } else if (this.level - target.level >= 5) {
+        } else if (this.level - target.level >= LEVEL_DIFFERENCE_THRESHOLD) {
             modifiedDamage = damage + damage / 2;
         }
         target.health = Math.max(0, target.health - modifiedDamage);
