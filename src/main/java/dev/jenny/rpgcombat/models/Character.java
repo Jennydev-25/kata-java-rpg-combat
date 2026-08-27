@@ -86,4 +86,8 @@ public class Character {
     public void joinFaction(Faction faction) {
         factions.add(faction);
     }
+
+    public void leaveFaction(Faction faction) {
+        factions.remove(faction);
+    }
 }
