@@ -13,4 +13,9 @@ public class AttackRangeTest {
     void testMelee_ShouldHaveTwoMetersRange() {
         assertThat(AttackRange.MELEE.getMeters(), is(equalTo(2)));
     }
+
+    @Test
+    void testRanged_ShouldHaveTwentyMetersRange() {
+        assertThat(AttackRange.RANGED.getMeters(), is(equalTo(20)));
+    }
 }
