@@ -182,4 +182,25 @@ public class CharacterTest {
                 Arguments.of(List.of(rebels, empire), List.of(rebels), Set.of(empire)),
                 Arguments.of(List.of(rebels, empire), List.of(rebels, empire), Set.of()));
     }
+
+    @ParameterizedTest
+    @MethodSource("factionsForAllyCheck")
+    void testIsAllyOf_WhenCharactersShareOrDoNotShareFactions_ShouldReturnExpectedResult(
+            List<Faction> characterFactions, List<Faction> targetFactions, boolean expectedIsAlly) {
+        characterFactions.forEach(character::joinFaction);
+        targetFactions.forEach(target::joinFaction);
+
+        assertThat(character.isAllyOf(target), is(equalTo(expectedIsAlly)));
+    }
+
+    private static Stream<Arguments> factionsForAllyCheck() {
+        Faction rebels = new Faction("Rebels");
+        Faction empire = new Faction("Empire");
+        return Stream.of(
+                Arguments.of(List.of(), List.of(), false),
+                Arguments.of(List.of(rebels), List.of(), false),
+                Arguments.of(List.of(rebels), List.of(rebels), true),
+                Arguments.of(List.of(rebels), List.of(empire), false),
+                Arguments.of(List.of(rebels, empire), List.of(empire), true));
+    }
 }
