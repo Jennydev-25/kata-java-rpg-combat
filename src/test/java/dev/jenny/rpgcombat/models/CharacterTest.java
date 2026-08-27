@@ -234,4 +234,12 @@ public class CharacterTest {
 
         assertThat(character.getHealth(), is(equalTo(700)));
     }
+
+    @Test
+    void testTakeDamage_WhenDamageIsAtLeastHealth_ShouldReduceHealthToZeroAndDestroyCharacter() {
+        character.takeDamage(1000);
+
+        assertThat(character.getHealth(), is(equalTo(0)));
+        assertThat(character.isDestroyed(), is(true));
+    }
 }
