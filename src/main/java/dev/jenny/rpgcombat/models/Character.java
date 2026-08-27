@@ -14,6 +14,11 @@ public class Character {
         this.level = INITIAL_LEVEL;
     }
 
+    public Character(int level) {
+        this.health = MAX_HEALTH;
+        this.level = level;
+    }
+
     public int getHealth() {
         return health;
     }
@@ -33,7 +38,11 @@ public class Character {
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative");
         }
-        target.health = Math.max(0, target.health - damage);
+        int modifiedDamage = damage;
+        if (target.level - this.level >= 5) {
+            modifiedDamage = damage / 2;
+        }
+        target.health = Math.max(0, target.health - modifiedDamage);
     }
 
     public void heal(Character target, int amount) {
