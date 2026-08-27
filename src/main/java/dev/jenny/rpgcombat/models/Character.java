@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /** Character that takes part in the fight. */
-public class Character {
+public class Character implements Damageable {
 
     private static final int MAX_HEALTH = 1000;
     private static final int INITIAL_LEVEL = 1;
@@ -47,19 +47,14 @@ public class Character {
         return health > 0;
     }
 
-    public void dealDamage(Character target, int damage) {
+    public void dealDamage(Damageable target, int damage) {
         dealDamage(target, damage, 0);
     }
 
-    public void dealDamage(Character target, int damage, int distance) {
+    public void dealDamage(Damageable target, int damage, int distance) {
         validateAttack(target, damage, distance);
-        int modifiedDamage = damage;
-        if (target.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
-            modifiedDamage = damage / 2;
-        } else if (this.level - target.level >= LEVEL_DIFFERENCE_THRESHOLD) {
-            modifiedDamage = damage + damage / 2;
-        }
-        target.health = Math.max(0, target.health - modifiedDamage);
+        int modifiedDamage = calculateModifiedDamage(target, damage);
+        target.takeDamage(modifiedDamage);
     }
 
     public void heal(Character target, int amount) {
@@ -79,7 +74,27 @@ public class Character {
         return !Collections.disjoint(this.factions, other.factions);
     }
 
-    private void validateAttack(Character target, int damage, int distance) {
+    public void takeDamage(int damage) {
+        health = Math.max(0, health - damage);
+    }
+
+    public boolean isDestroyed() {
+        return !isAlive();
+    }
+
+    private int calculateModifiedDamage(Damageable target, int damage) {
+        if (target instanceof Character characterTarget) {
+            if (characterTarget.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
+                return damage / 2;
+            }
+            if (this.level - characterTarget.level >= LEVEL_DIFFERENCE_THRESHOLD) {
+                return damage + damage / 2;
+            }
+        }
+        return damage;
+    }
+
+    private void validateAttack(Damageable target, int damage, int distance) {
         if (target == this) {
             throw new IllegalArgumentException("Cannot deal damage to yourself");
         }
@@ -89,7 +104,7 @@ public class Character {
         if (distance > this.attackRange.getMeters()) {
             throw new IllegalArgumentException("Target is out of range");
         }
-        if (this.isAllyOf(target)) {
+        if (target instanceof Character characterTarget && this.isAllyOf(characterTarget)) {
             throw new IllegalStateException("Cannot deal damage to an ally");
         }
     }

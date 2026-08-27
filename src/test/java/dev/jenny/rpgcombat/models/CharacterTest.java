@@ -227,4 +227,28 @@ public class CharacterTest {
 
         assertThat(target.getHealth(), is(equalTo(700)));
     }
+
+    @Test
+    void testTakeDamage_WhenDamageIsLessThanHealth_ShouldReduceHealthByDamage() {
+        character.takeDamage(300);
+
+        assertThat(character.getHealth(), is(equalTo(700)));
+    }
+
+    @Test
+    void testTakeDamage_WhenDamageIsAtLeastHealth_ShouldReduceHealthToZeroAndDestroyCharacter() {
+        character.takeDamage(1000);
+
+        assertThat(character.getHealth(), is(equalTo(0)));
+        assertThat(character.isDestroyed(), is(true));
+    }
+
+    @Test
+    void testDealDamage_WhenTargetIsProp_ShouldReduceHealthByDamage() {
+        Prop tree = new Prop(2000);
+
+        character.dealDamage(tree, 300);
+
+        assertThat(tree.getHealth(), is(equalTo(1700)));
+    }
 }
