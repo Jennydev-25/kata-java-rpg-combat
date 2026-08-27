@@ -61,6 +61,9 @@ public class Character {
         if (distance > this.attackRange.getMeters()) {
             throw new IllegalArgumentException("Target is out of range");
         }
+        if (this.isAllyOf(target)) {
+            throw new IllegalStateException("Cannot deal damage to an ally");
+        }
         int modifiedDamage = damage;
         if (target.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
             modifiedDamage = damage / 2;
