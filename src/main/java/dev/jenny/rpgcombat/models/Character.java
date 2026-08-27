@@ -90,4 +90,8 @@ public class Character {
     public void leaveFaction(Faction faction) {
         factions.remove(faction);
     }
+
+    public boolean isAllyOf(Character other) {
+        return !Collections.disjoint(this.factions, other.factions);
+    }
 }
