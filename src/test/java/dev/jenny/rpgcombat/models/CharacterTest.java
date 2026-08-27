@@ -93,4 +93,11 @@ public class CharacterTest {
                 () -> character.heal(target, 100));
         assertThat(exception.getMessage(), is(equalTo("Can only heal yourself")));
     }
+
+    @Test
+    void testDealDamage_WhenTargetIsAtLeast5Higher_ShouldReduceDamageByHalf() {
+        Character higherLevelTarget = new Character(6);
+        character.dealDamage(higherLevelTarget, 100);
+        assertThat(higherLevelTarget.getHealth(), is(equalTo(950)));
+    }
 }
