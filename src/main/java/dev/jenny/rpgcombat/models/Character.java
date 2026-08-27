@@ -83,6 +83,10 @@ public class Character {
         health = Math.max(0, health - damage);
     }
 
+    public boolean isDestroyed() {
+        return !isAlive();
+    }
+
     private void validateAttack(Character target, int damage, int distance) {
         if (target == this) {
             throw new IllegalArgumentException("Cannot deal damage to yourself");
