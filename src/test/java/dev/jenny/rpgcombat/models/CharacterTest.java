@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -135,5 +136,10 @@ public class CharacterTest {
         attacker.dealDamage(target, damage, distance);
 
         assertThat(target.getHealth(), is(equalTo(expectedHealth)));
+    }
+
+    @Test
+    void testGetFactions_WhenCharacterIsNew_ShouldBeEmpty() {
+        assertThat(character.getFactions(), is(equalTo(Set.of())));
     }
 }
