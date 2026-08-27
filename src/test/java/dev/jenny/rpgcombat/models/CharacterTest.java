@@ -163,4 +163,23 @@ public class CharacterTest {
                 Arguments.of(List.of(rebels), Set.of(rebels)),
                 Arguments.of(List.of(rebels, empire), Set.of(rebels, empire)));
     }
+
+    @ParameterizedTest
+    @MethodSource("factionsToLeave")
+    void testLeaveFaction_WhenLeavingOneOrMoreFactions_ShouldRemoveThemFromCharacter(
+            List<Faction> factionsToJoin, List<Faction> factionsToLeave, Set<Faction> expectedFactions) {
+        factionsToJoin.forEach(character::joinFaction);
+        factionsToLeave.forEach(character::leaveFaction);
+
+        assertThat(character.getFactions(), is(equalTo(expectedFactions)));
+    }
+
+    private static Stream<Arguments> factionsToLeave() {
+        Faction rebels = new Faction("Rebels");
+        Faction empire = new Faction("Empire");
+        return Stream.of(
+                Arguments.of(List.of(rebels), List.of(rebels), Set.of()),
+                Arguments.of(List.of(rebels, empire), List.of(rebels), Set.of(empire)),
+                Arguments.of(List.of(rebels, empire), List.of(rebels, empire), Set.of()));
+    }
 }
