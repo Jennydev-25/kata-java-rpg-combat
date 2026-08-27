@@ -242,4 +242,13 @@ public class CharacterTest {
         assertThat(character.getHealth(), is(equalTo(0)));
         assertThat(character.isDestroyed(), is(true));
     }
+
+    @Test
+    void testDealDamage_WhenTargetIsProp_ShouldReduceHealthByDamage() {
+        Prop tree = new Prop(2000);
+
+        character.dealDamage(tree, 300);
+
+        assertThat(tree.getHealth(), is(equalTo(1700)));
+    }
 }
