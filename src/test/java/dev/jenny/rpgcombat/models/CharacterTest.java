@@ -5,11 +5,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /** Tests for Character. */
@@ -141,5 +145,22 @@ public class CharacterTest {
     @Test
     void testGetFactions_WhenCharacterIsNew_ShouldBeEmpty() {
         assertThat(character.getFactions(), is(equalTo(Set.of())));
+    }
+
+    @ParameterizedTest
+    @MethodSource("factionsToJoin")
+    void testJoinFaction_WhenJoiningOneOrMoreFactions_ShouldAddThemToCharacter(
+            List<Faction> factionsToJoin, Set<Faction> expectedFactions) {
+        factionsToJoin.forEach(character::joinFaction);
+
+        assertThat(character.getFactions(), is(equalTo(expectedFactions)));
+    }
+
+    private static Stream<Arguments> factionsToJoin() {
+        Faction rebels = new Faction("Rebels");
+        Faction empire = new Faction("Empire");
+        return Stream.of(
+                Arguments.of(List.of(rebels), Set.of(rebels)),
+                Arguments.of(List.of(rebels, empire), Set.of(rebels, empire)));
     }
 }
