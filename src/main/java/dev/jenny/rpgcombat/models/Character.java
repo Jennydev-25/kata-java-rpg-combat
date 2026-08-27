@@ -41,6 +41,8 @@ public class Character {
         int modifiedDamage = damage;
         if (target.level - this.level >= 5) {
             modifiedDamage = damage / 2;
+        } else if (this.level - target.level >= 5) {
+            modifiedDamage = damage + damage / 2;
         }
         target.health = Math.max(0, target.health - modifiedDamage);
     }
