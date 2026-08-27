@@ -5,10 +5,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /** Tests for Character. */
@@ -89,10 +94,10 @@ public class CharacterTest {
     }
 
     @Test
-    void testHeal_WhenTargetIsNotSelf_ShouldThrowIllegalArgumentException() {
+    void testHeal_WhenTargetIsNeitherSelfNorAlly_ShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> character.heal(target, 100));
-        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself")));
+        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself or an ally")));
     }
 
     @Test
@@ -135,5 +140,91 @@ public class CharacterTest {
         attacker.dealDamage(target, damage, distance);
 
         assertThat(target.getHealth(), is(equalTo(expectedHealth)));
+    }
+
+    @Test
+    void testGetFactions_WhenCharacterIsNew_ShouldBeEmpty() {
+        assertThat(character.getFactions(), is(equalTo(Set.of())));
+    }
+
+    @ParameterizedTest
+    @MethodSource("factionsToJoin")
+    void testJoinFaction_WhenJoiningOneOrMoreFactions_ShouldAddThemToCharacter(
+            List<Faction> factionsToJoin, Set<Faction> expectedFactions) {
+        factionsToJoin.forEach(character::joinFaction);
+
+        assertThat(character.getFactions(), is(equalTo(expectedFactions)));
+    }
+
+    private static Stream<Arguments> factionsToJoin() {
+        Faction rebels = new Faction("Rebels");
+        Faction empire = new Faction("Empire");
+        return Stream.of(
+                Arguments.of(List.of(rebels), Set.of(rebels)),
+                Arguments.of(List.of(rebels, empire), Set.of(rebels, empire)));
+    }
+
+    @ParameterizedTest
+    @MethodSource("factionsToLeave")
+    void testLeaveFaction_WhenLeavingOneOrMoreFactions_ShouldRemoveThemFromCharacter(
+            List<Faction> factionsToJoin, List<Faction> factionsToLeave, Set<Faction> expectedFactions) {
+        factionsToJoin.forEach(character::joinFaction);
+        factionsToLeave.forEach(character::leaveFaction);
+
+        assertThat(character.getFactions(), is(equalTo(expectedFactions)));
+    }
+
+    private static Stream<Arguments> factionsToLeave() {
+        Faction rebels = new Faction("Rebels");
+        Faction empire = new Faction("Empire");
+        return Stream.of(
+                Arguments.of(List.of(rebels), List.of(rebels), Set.of()),
+                Arguments.of(List.of(rebels, empire), List.of(rebels), Set.of(empire)),
+                Arguments.of(List.of(rebels, empire), List.of(rebels, empire), Set.of()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("factionsForAllyCheck")
+    void testIsAllyOf_WhenCharactersShareOrDoNotShareFactions_ShouldReturnExpectedResult(
+            List<Faction> characterFactions, List<Faction> targetFactions, boolean expectedIsAlly) {
+        characterFactions.forEach(character::joinFaction);
+        targetFactions.forEach(target::joinFaction);
+
+        assertThat(character.isAllyOf(target), is(equalTo(expectedIsAlly)));
+    }
+
+    private static Stream<Arguments> factionsForAllyCheck() {
+        Faction rebels = new Faction("Rebels");
+        Faction empire = new Faction("Empire");
+        return Stream.of(
+                Arguments.of(List.of(), List.of(), false),
+                Arguments.of(List.of(rebels), List.of(), false),
+                Arguments.of(List.of(rebels), List.of(rebels), true),
+                Arguments.of(List.of(rebels), List.of(empire), false),
+                Arguments.of(List.of(rebels, empire), List.of(empire), true));
+    }
+
+    @Test
+    void testDealDamage_WhenTargetIsAlly_ShouldThrowIllegalStateException() {
+        Faction rebels = new Faction("Rebels");
+        character.joinFaction(rebels);
+        target.joinFaction(rebels);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> character.dealDamage(target, 100));
+        assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to an ally")));
+    }
+
+    @Test
+    void testHeal_WhenTargetIsAlly_ShouldIncreaseHealthByAmount() {
+        Faction rebels = new Faction("Rebels");
+        Character attacker = new Character();
+        attacker.dealDamage(target, 500);
+        character.joinFaction(rebels);
+        target.joinFaction(rebels);
+
+        character.heal(target, 200);
+
+        assertThat(target.getHealth(), is(equalTo(700)));
     }
 }
