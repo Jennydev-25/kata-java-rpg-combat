@@ -6,17 +6,24 @@ public class Character {
     private static final int MAX_HEALTH = 1000;
     private static final int INITIAL_LEVEL = 1;
     private static final int LEVEL_DIFFERENCE_THRESHOLD = 5;
+    private static final AttackRange DEFAULT_ATTACK_RANGE = AttackRange.MELEE;
 
     private int health;
     private int level;
+    private final AttackRange attackRange;
 
     public Character() {
         this(INITIAL_LEVEL);
     }
 
     public Character(int level) {
+        this(level, DEFAULT_ATTACK_RANGE);
+    }
+
+    public Character(int level, AttackRange attackRange) {
         this.health = MAX_HEALTH;
         this.level = level;
+        this.attackRange = attackRange;
     }
 
     public int getHealth() {
@@ -32,11 +39,18 @@ public class Character {
     }
 
     public void dealDamage(Character target, int damage) {
+        dealDamage(target, damage, 0);
+    }
+
+    public void dealDamage(Character target, int damage, int distance) {
         if (target == this) {
             throw new IllegalArgumentException("Cannot deal damage to yourself");
         }
         if (damage < 0) {
             throw new IllegalArgumentException("Damage cannot be negative");
+        }
+        if (distance > this.attackRange.getMeters()) {
+            throw new IllegalArgumentException("Target is out of range");
         }
         int modifiedDamage = damage;
         if (target.level - this.level >= LEVEL_DIFFERENCE_THRESHOLD) {
