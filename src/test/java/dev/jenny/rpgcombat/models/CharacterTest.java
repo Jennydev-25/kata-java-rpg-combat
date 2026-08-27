@@ -94,10 +94,10 @@ public class CharacterTest {
     }
 
     @Test
-    void testHeal_WhenTargetIsNotSelf_ShouldThrowIllegalArgumentException() {
+    void testHeal_WhenTargetIsNeitherSelfNorAlly_ShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> character.heal(target, 100));
-        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself")));
+        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself or an ally")));
     }
 
     @Test
