@@ -107,4 +107,12 @@ public class CharacterTest {
         higherLevelAttacker.dealDamage(target, 100);
         assertThat(target.getHealth(), is(equalTo(850)));
     }
+
+    @Test
+    void testDealDamage_WhenTargetIsOutOfRange_ShouldThrowIllegalArgumentException() {
+        Character melee = new Character(1, AttackRange.MELEE);
+        Character target = new Character();
+
+        assertThrows(IllegalArgumentException.class, () -> melee.dealDamage(target, 10, 3));
+    }
 }
