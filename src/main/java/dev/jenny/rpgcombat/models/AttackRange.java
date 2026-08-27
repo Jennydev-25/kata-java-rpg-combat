@@ -2,7 +2,8 @@ package dev.jenny.rpgcombat.models;
 
 /** Maximum attack range of a character, in meters. */
 public enum AttackRange {
-    MELEE(2);
+    MELEE(2),
+    RANGED(20);
 
     private final int meters;
 
