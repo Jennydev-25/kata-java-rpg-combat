@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /** Character that takes part in the fight. */
-public class Character {
+public class Character implements Damageable {
 
     private static final int MAX_HEALTH = 1000;
     private static final int INITIAL_LEVEL = 1;
