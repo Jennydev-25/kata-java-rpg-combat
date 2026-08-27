@@ -203,4 +203,15 @@ public class CharacterTest {
                 Arguments.of(List.of(rebels), List.of(empire), false),
                 Arguments.of(List.of(rebels, empire), List.of(empire), true));
     }
+
+    @Test
+    void testDealDamage_WhenTargetIsAlly_ShouldThrowIllegalStateException() {
+        Faction rebels = new Faction("Rebels");
+        character.joinFaction(rebels);
+        target.joinFaction(rebels);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> character.dealDamage(target, 100));
+        assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to an ally")));
+    }
 }
