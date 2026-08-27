@@ -82,4 +82,8 @@ public class Character {
         }
         target.health = Math.min(MAX_HEALTH, target.health + amount);
     }
+
+    public void joinFaction(Faction faction) {
+        factions.add(faction);
+    }
 }
