@@ -244,6 +244,11 @@ public class CharacterTest {
     }
 
     @Test
+    void testIsDestroyed_WhenCharacterIsAlive_ShouldReturnFalse() {
+        assertThat(character.isDestroyed(), is(false));
+    }
+
+    @Test
     void testDealDamage_WhenTargetIsProp_ShouldReduceHealthByDamage() {
         Prop tree = new Prop(2000);
 
