@@ -11,6 +11,7 @@ Kata centrado en modelar por TDD las reglas de combate de un juego de rol: perso
 - [Descripción](#-descripción)
 - [Cómo reproducir el proyecto](#-cómo-reproducir-el-proyecto)
 - [Estructura del repositorio](#-estructura-del-repositorio)
+- [Testing](#-testing)
 - [Tecnologías](#-tecnologías)
 - [Autora](#-autora)
 
@@ -194,6 +195,13 @@ El reporte de cobertura se genera en `target/site/jacoco/index.html`, que puedes
 
 ```text
 kata-java-rpg-combat/
+├── assets/
+│   └── images/
+│       └── test-explorer/
+│           ├── attack-range-tests.png
+│           ├── character-tests.png
+│           ├── faction-tests.png
+│           └── prop-tests.png
 ├── src/
 │   ├── main/java/dev/jenny/rpgcombat/models/
 │   │   ├── AttackRange.java
@@ -211,6 +219,80 @@ kata-java-rpg-combat/
 ├── pom.xml
 └── README.md
 ```
+
+[Volver al índice](#-índice)
+
+---
+
+## 🧪 Testing
+
+42 tests en total, repartidos en las 4 clases del dominio. Cubren tanto los casos felices como cada validación y excepción del enunciado.
+
+### `AttackRangeTest`
+
+`AttackRangeTest` contiene 2 tests para comprobar los metros de cada tipo de rango de ataque.
+
+| Test                                     | Escenario                               |
+| ---------------------------------------- | --------------------------------------- |
+| `testMelee_ShouldHaveTwoMetersRange`     | El rango cuerpo a cuerpo es de 2 metros |
+| `testRanged_ShouldHaveTwentyMetersRange` | El rango a distancia es de 20 metros    |
+
+![Tests de AttackRangeTest](assets/images/test-explorer/attack-range-tests.png)
+
+### `CharacterTest`
+
+`CharacterTest` contiene 35 tests para cubrir todo el comportamiento de `Character`: crear, dañar, curar, facciones y destrucción. Los nombres se muestran recortados hasta el escenario (`_When...`); la parte final (`_Should...`) no se repite porque ya la explica la columna de al lado — el nombre completo está en el código y en la captura de abajo.
+
+| Test                                                   | Escenario                                                          |
+| ------------------------------------------------------ | ------------------------------------------------------------------ |
+| `testConstructor`                                      | Un personaje nuevo tiene 1000 de vida, nivel 1 y está vivo         |
+| `testGetFactions_WhenCharacterIsNew`                   | Un personaje nuevo no pertenece a ninguna facción                  |
+| `testDealDamage_WhenDamageIsLessThanHealth`            | El daño se resta de la vida del objetivo                           |
+| `testDealDamage_WhenDamageIsAtLeastHealth`             | Con daño de 1000 o 1500, la vida llega a 0 y el personaje muere    |
+| `testDealDamage_WhenTargetIsSelf`                      | No se puede dañar a uno mismo                                      |
+| `testDealDamage_WhenDamageIsNegative`                  | El daño no puede ser negativo                                      |
+| `testDealDamage_WhenDistanceExceedsRange`              | Con MELEE a 3m o RANGED a 25m (fuera de rango), no se puede dañar  |
+| `testDealDamage_WhenDistanceIsWithinRange`             | Con MELEE a 2m o RANGED a 15m (dentro de rango), el daño se aplica |
+| `testDealDamage_WhenTargetIsAlly`                      | No se puede dañar a un aliado de la misma facción                  |
+| `testDealDamage_WhenTargetIsAtLeast5Higher`            | Si el objetivo tiene 5+ niveles más, el daño se reduce a la mitad  |
+| `testDealDamage_WhenAttackerIsAtLeast5Higher`          | Si el atacante tiene 5+ niveles más, el daño aumenta un 50%        |
+| `testDealDamage_WhenTargetIsProp`                      | Un personaje puede dañar a un `Prop` igual que a otro personaje    |
+| `testHeal_WhenTargetIsAlive`                           | Un personaje vivo puede curarse a sí mismo                         |
+| `testHeal_WhenTargetIsNeitherSelfNorAlly`              | No se puede curar a alguien que no sea uno mismo o un aliado       |
+| `testHeal_WhenAmountIsNegative`                        | La cantidad a curar no puede ser negativa                          |
+| `testHeal_WhenTargetIsDead`                            | No se puede curar a un personaje muerto                            |
+| `testHeal_WhenNewHealthExceedsMax`                     | Curar 500 o 700 nunca sube la vida por encima de 1000              |
+| `testHeal_WhenTargetIsAlly`                            | Un personaje puede curar a un aliado de su misma facción           |
+| `testJoinFaction_WhenJoiningOneOrMoreFactions`         | Unirse a una o varias facciones las añade al personaje             |
+| `testLeaveFaction_WhenLeavingOneOrMoreFactions`        | Dejar una o varias facciones las quita del personaje               |
+| `testIsAllyOf_WhenCharactersShareOrDoNotShareFactions` | Dos personajes son aliados solo si comparten alguna facción        |
+| `testTakeDamage_WhenDamageIsLessThanHealth`            | El daño directo también resta vida correctamente                   |
+| `testTakeDamage_WhenDamageIsAtLeastHealth`             | Un daño igual o mayor que la vida deja al personaje destruido      |
+| `testIsDestroyed_WhenCharacterIsAlive`                 | Un personaje vivo no está destruido                                |
+
+![Tests de CharacterTest](assets/images/test-explorer/character-tests.png)
+
+### `FactionTest`
+
+`FactionTest` contiene 1 test para comprobar la igualdad entre dos facciones con el mismo nombre.
+
+| Test                                         | Escenario                                     |
+| -------------------------------------------- | --------------------------------------------- |
+| `testFaction_WhenTwoFactionsHaveTheSameName` | Dos facciones con el mismo nombre son iguales |
+
+![Tests de FactionTest](assets/images/test-explorer/faction-tests.png)
+
+### `PropTest`
+
+`PropTest` contiene 4 tests para cubrir la creación de un prop y cómo recibe daño hasta ser destruido. Igual que en `CharacterTest`, los nombres se muestran recortados hasta el escenario.
+
+| Test                                        | Escenario                                                            |
+| ------------------------------------------- | -------------------------------------------------------------------- |
+| `testConstructor`                           | Un prop nuevo tiene la vida indicada en el constructor               |
+| `testTakeDamage_WhenDamageIsLessThanHealth` | El daño se resta de la vida del prop                                 |
+| `testTakeDamage_WhenDamageIsAtLeastHealth`  | Con daño de 2000 o 2500, la vida llega a 0 y el prop queda destruido |
+
+![Tests de PropTest](assets/images/test-explorer/prop-tests.png)
 
 [Volver al índice](#-índice)
 
