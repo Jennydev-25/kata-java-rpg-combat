@@ -10,6 +10,7 @@ Kata centrado en modelar por TDD las reglas de combate de un juego de rol: perso
 
 - [Descripción](#-descripción)
 - [Cómo reproducir el proyecto](#-cómo-reproducir-el-proyecto)
+- [Estructura del repositorio](#-estructura-del-repositorio)
 - [Tecnologías](#-tecnologías)
 - [Autora](#-autora)
 
@@ -184,6 +185,32 @@ mvn test
 ```
 
 El reporte de cobertura se genera en `target/site/jacoco/index.html`, que puedes abrir en el navegador
+
+[Volver al índice](#-índice)
+
+---
+
+## 📁 Estructura del repositorio
+
+```text
+kata-java-rpg-combat/
+├── src/
+│   ├── main/java/dev/jenny/rpgcombat/models/
+│   │   ├── AttackRange.java
+│   │   ├── Character.java
+│   │   ├── Damageable.java
+│   │   ├── Faction.java
+│   │   └── Prop.java
+│   └── test/java/dev/jenny/rpgcombat/models/
+│       ├── AttackRangeTest.java
+│       ├── CharacterTest.java
+│       ├── FactionTest.java
+│       └── PropTest.java
+├── .editorconfig
+├── .gitignore
+├── pom.xml
+└── README.md
+```
 
 [Volver al índice](#-índice)
 
