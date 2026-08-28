@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,6 +37,11 @@ public class CharacterTest {
     }
 
     @Test
+    void testGetFactions_WhenCharacterIsNew_ShouldBeEmpty() {
+        assertThat(character.getFactions(), is(equalTo(Set.of())));
+    }
+
+    @Test
     void testDealDamage_WhenDamageIsLessThanHealth_ShouldReduceHealthByDamage() {
         character.dealDamage(target, 300);
         assertThat(target.getHealth(), is(equalTo(700)));
@@ -50,43 +56,6 @@ public class CharacterTest {
     }
 
     @Test
-    void testDealDamage_WhenDamageIsNegative_ShouldThrowIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> character.dealDamage(target, -100));
-        assertThat(exception.getMessage(), is(equalTo("Damage cannot be negative")));
-    }
-
-    @Test
-    void testHeal_WhenTargetIsAlive_ShouldIncreaseHealthByAmount() {
-        target.dealDamage(character, 500);
-        character.heal(character, 200);
-        assertThat(character.getHealth(), is(equalTo(700)));
-    }
-
-    @Test
-    void testHeal_WhenTargetIsDead_ShouldThrowIllegalStateException() {
-        target.dealDamage(character, 1000);
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> character.heal(character, 100));
-        assertThat(exception.getMessage(), is(equalTo("Cannot heal a dead character")));
-    }
-
-    @ParameterizedTest(name = "healing by {0} should not raise health above 1000")
-    @ValueSource(ints = { 500, 700 })
-    void testHeal_WhenNewHealthExceedsMax_ShouldCapHealthAtMax(int amount) {
-        target.dealDamage(character, 500);
-        character.heal(character, amount);
-        assertThat(character.getHealth(), is(equalTo(1000)));
-    }
-
-    @Test
-    void testHeal_WhenAmountIsNegative_ShouldThrowIllegalArgumentException() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> character.heal(character, -50));
-        assertThat(exception.getMessage(), is(equalTo("Amount cannot be negative")));
-    }
-
-    @Test
     void testDealDamage_WhenTargetIsSelf_ShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
                 () -> character.dealDamage(character, 100));
@@ -94,24 +63,10 @@ public class CharacterTest {
     }
 
     @Test
-    void testHeal_WhenTargetIsNeitherSelfNorAlly_ShouldThrowIllegalArgumentException() {
+    void testDealDamage_WhenDamageIsNegative_ShouldThrowIllegalArgumentException() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> character.heal(target, 100));
-        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself or an ally")));
-    }
-
-    @Test
-    void testDealDamage_WhenTargetIsAtLeast5Higher_ShouldReduceDamageByHalf() {
-        Character higherLevelTarget = new Character(6);
-        character.dealDamage(higherLevelTarget, 100);
-        assertThat(higherLevelTarget.getHealth(), is(equalTo(950)));
-    }
-
-    @Test
-    void testDealDamage_WhenAttackerIsAtLeast5Higher_ShouldIncreaseDamageByHalf() {
-        Character higherLevelAttacker = new Character(6);
-        higherLevelAttacker.dealDamage(target, 100);
-        assertThat(target.getHealth(), is(equalTo(850)));
+                () -> character.dealDamage(target, -100));
+        assertThat(exception.getMessage(), is(equalTo("Damage cannot be negative")));
     }
 
     @ParameterizedTest
@@ -143,8 +98,87 @@ public class CharacterTest {
     }
 
     @Test
-    void testGetFactions_WhenCharacterIsNew_ShouldBeEmpty() {
-        assertThat(character.getFactions(), is(equalTo(Set.of())));
+    void testDealDamage_WhenTargetIsAlly_ShouldThrowIllegalStateException() {
+        Faction rebels = new Faction("Rebels");
+        character.joinFaction(rebels);
+        target.joinFaction(rebels);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> character.dealDamage(target, 100));
+        assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to an ally")));
+    }
+
+    @Test
+    void testDealDamage_WhenTargetIsAtLeast5Higher_ShouldReduceDamageByHalf() {
+        Character higherLevelTarget = new Character(6);
+        character.dealDamage(higherLevelTarget, 100);
+        assertThat(higherLevelTarget.getHealth(), is(equalTo(950)));
+    }
+
+    @Test
+    void testDealDamage_WhenAttackerIsAtLeast5Higher_ShouldIncreaseDamageByHalf() {
+        Character higherLevelAttacker = new Character(6);
+        higherLevelAttacker.dealDamage(target, 100);
+        assertThat(target.getHealth(), is(equalTo(850)));
+    }
+
+    @Test
+    void testDealDamage_WhenTargetIsProp_ShouldReduceHealthByDamage() {
+        Prop tree = new Prop(2000);
+
+        character.dealDamage(tree, 300);
+
+        assertThat(tree.getHealth(), is(equalTo(1700)));
+    }
+
+    @Test
+    void testHeal_WhenTargetIsAlive_ShouldIncreaseHealthByAmount() {
+        target.dealDamage(character, 500);
+        character.heal(character, 200);
+        assertThat(character.getHealth(), is(equalTo(700)));
+    }
+
+    @Test
+    void testHeal_WhenTargetIsNeitherSelfNorAlly_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.heal(target, 100));
+        assertThat(exception.getMessage(), is(equalTo("Can only heal yourself or an ally")));
+    }
+
+    @Test
+    void testHeal_WhenAmountIsNegative_ShouldThrowIllegalArgumentException() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> character.heal(character, -50));
+        assertThat(exception.getMessage(), is(equalTo("Amount cannot be negative")));
+    }
+
+    @Test
+    void testHeal_WhenTargetIsDead_ShouldThrowIllegalStateException() {
+        target.dealDamage(character, 1000);
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> character.heal(character, 100));
+        assertThat(exception.getMessage(), is(equalTo("Cannot heal a dead character")));
+    }
+
+    @ParameterizedTest(name = "healing by {0} should not raise health above 1000")
+    @ValueSource(ints = { 500, 700 })
+    void testHeal_WhenNewHealthExceedsMax_ShouldCapHealthAtMax(int amount) {
+        target.dealDamage(character, 500);
+        character.heal(character, amount);
+        assertThat(character.getHealth(), is(equalTo(1000)));
+    }
+
+    @Test
+    void testHeal_WhenTargetIsAlly_ShouldIncreaseHealthByAmount() {
+        Faction rebels = new Faction("Rebels");
+        Character attacker = new Character();
+        attacker.dealDamage(target, 500);
+        character.joinFaction(rebels);
+        target.joinFaction(rebels);
+
+        character.heal(target, 200);
+
+        assertThat(target.getHealth(), is(equalTo(700)));
     }
 
     @ParameterizedTest
@@ -205,30 +239,6 @@ public class CharacterTest {
     }
 
     @Test
-    void testDealDamage_WhenTargetIsAlly_ShouldThrowIllegalStateException() {
-        Faction rebels = new Faction("Rebels");
-        character.joinFaction(rebels);
-        target.joinFaction(rebels);
-
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> character.dealDamage(target, 100));
-        assertThat(exception.getMessage(), is(equalTo("Cannot deal damage to an ally")));
-    }
-
-    @Test
-    void testHeal_WhenTargetIsAlly_ShouldIncreaseHealthByAmount() {
-        Faction rebels = new Faction("Rebels");
-        Character attacker = new Character();
-        attacker.dealDamage(target, 500);
-        character.joinFaction(rebels);
-        target.joinFaction(rebels);
-
-        character.heal(target, 200);
-
-        assertThat(target.getHealth(), is(equalTo(700)));
-    }
-
-    @Test
     void testTakeDamage_WhenDamageIsLessThanHealth_ShouldReduceHealthByDamage() {
         character.takeDamage(300);
 
@@ -246,14 +256,5 @@ public class CharacterTest {
     @Test
     void testIsDestroyed_WhenCharacterIsAlive_ShouldReturnFalse() {
         assertThat(character.isDestroyed(), is(false));
-    }
-
-    @Test
-    void testDealDamage_WhenTargetIsProp_ShouldReduceHealthByDamage() {
-        Prop tree = new Prop(2000);
-
-        character.dealDamage(tree, 300);
-
-        assertThat(tree.getHealth(), is(equalTo(1700)));
     }
 }
