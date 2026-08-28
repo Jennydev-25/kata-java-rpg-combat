@@ -12,6 +12,7 @@ Kata centrado en modelar por TDD las reglas de combate de un juego de rol: perso
 - [Cómo reproducir el proyecto](#-cómo-reproducir-el-proyecto)
 - [Estructura del repositorio](#-estructura-del-repositorio)
 - [Testing](#-testing)
+- [Cobertura de tests](#-cobertura-de-tests-coverage)
 - [Tecnologías](#-tecnologías)
 - [Autora](#-autora)
 
@@ -197,6 +198,8 @@ El reporte de cobertura se genera en `target/site/jacoco/index.html`, que puedes
 kata-java-rpg-combat/
 ├── assets/
 │   └── images/
+│       ├── coverage/
+│       │   └── coverage-jacoco.png
 │       └── test-explorer/
 │           ├── attack-range-tests.png
 │           ├── character-tests.png
@@ -293,6 +296,23 @@ kata-java-rpg-combat/
 | `testTakeDamage_WhenDamageIsAtLeastHealth`  | Con daño de 2000 o 2500, la vida llega a 0 y el prop queda destruido |
 
 ![Tests de PropTest](assets/images/test-explorer/prop-tests.png)
+
+[Volver al índice](#-índice)
+
+---
+
+## 📊 Cobertura de tests (coverage)
+
+Cobertura del 100% en instrucciones, ramas, líneas y métodos, verificada con **JaCoCo** al ejecutar `mvn test`.
+
+![Cobertura de tests con JaCoCo](assets/images/coverage/coverage-jacoco.png)
+
+| Métrica       | Cobertura |
+| ------------- | --------- |
+| Instrucciones | 100 %     |
+| Ramas         | 100 %     |
+| Líneas        | 100 %     |
+| Métodos       | 100 %     |
 
 [Volver al índice](#-índice)
 
