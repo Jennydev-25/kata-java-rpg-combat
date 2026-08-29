@@ -1,8 +1,16 @@
-# ⚔️ Kata RPG Combat – Combate por turnos en Java
+# ⚔️ Kata RPG Combat
 
 > Aquí no hay diplomacia: si tu `health` llega a 0, no hay resurrección que valga
 
-Kata centrado en modelar por TDD las reglas de combate de un juego de rol: personajes con vida, nivel y facciones, daño y curación, rango de ataque y objetos no-personaje. Desarrollado siguiendo **TDD** con **JUnit 5 + Hamcrest**, y cobertura de tests medida con **JaCoCo**.
+Kata centrada en modelar por TDD las reglas de combate de un juego de rol: personajes con vida, nivel y facciones, daño y curación, rango de ataque y objetos no-personaje. Desarrollado con **Java 21** siguiendo **TDD** con **JUnit 5 + Hamcrest**, y cobertura de tests medida con **JaCoCo**.
+
+---
+
+## 📸 Vista previa
+
+|                                  Testing                                   |                    Cobertura (JaCoCo)                    |
+| :------------------------------------------------------------------------: | :------------------------------------------------------: |
+| ![Tests de CharacterTest](assets/images/test-explorer/character-tests.png) | ![Cobertura](assets/images/coverage/coverage-jacoco.png) |
 
 ---
 
@@ -14,6 +22,7 @@ Kata centrado en modelar por TDD las reglas de combate de un juego de rol: perso
 - [Testing](#-testing)
 - [Cobertura de tests](#-cobertura-de-tests-coverage)
 - [Tecnologías](#-tecnologías)
+- [Recursos](#-recursos)
 - [Autora](#-autora)
 
 ---
@@ -62,7 +71,11 @@ El enunciado pide poder dañar objetos del escenario que no se curan, no atacan 
 
 Creé una interfaz `Damageable` (`getHealth`, `takeDamage`, `isDestroyed`) que implementan tanto `Character` como la nueva clase `Prop`.
 
-Cambié `dealDamage()` para que acepte cualquier `Damageable`, usando `instanceof Character` solo donde hacen falta reglas exclusivas de personajes. En este RPG hasta los árboles son `Damageable`.
+Cambié `dealDamage()` para que acepte cualquier `Damageable`, usando `instanceof Character` solo donde hacen falta reglas exclusivas de personajes.
+
+Diseñé `Damageable` con solo esos tres métodos aplicando el Principio de Segregación de Interfaces (ISP): `Prop` no implementa `joinFaction()`, `heal()` ni `dealDamage()` porque esos métodos directamente no existen en la interfaz que implementa. Así, que "los props son neutrales" queda garantizado en tiempo de compilación, en vez de depender de una comprobación en tiempo de ejecución que alguien podría olvidar.
+
+En este RPG hasta los árboles son `Damageable`.
 
 <details>
 <summary><strong>Enunciado completo</strong></summary>
@@ -329,10 +342,26 @@ Cobertura del 100% en instrucciones, ramas, líneas y métodos, verificada con *
 - **[Markdown](https://www.markdownguide.org/)** — Lenguaje de marcado para el README
 - **[Git](https://git-scm.com/)** / **[GitHub](https://github.com/)** — Control de versiones y alojamiento del proyecto
 
+[Volver al índice](#-índice)
+
+---
+
+## 📚 Recursos
+
+- **[Naming standards for unit tests — Roy Osherove](https://osherove.com/blog/2005/4/3/naming-standards-for-unit-tests.html)** — Convención de nombres de test aplicada en los 4 archivos de test
+- **[The Java Tutorials — Enum Types (Oracle)](https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html)** — Documentación oficial consultada al decidir `AttackRange` como `enum`
+- **[Effective Java, 3rd Edition](https://www.oreilly.com/library/view/effective-java-3rd/9780134686097/)** — Joshua Bloch; base del fail-fast con `IllegalArgumentException` (Item 49)
+- **[Canon TDD — Kent Beck](https://newsletter.kentbeck.com/p/canon-tdd)** — Referencia oficial del ciclo Red-Green-Refactor
+- **[Triangulation — tdd-ebook (Grzegorz Gałęzowski)](https://github.com/grzesiek-galezowski/tdd-ebook/blob/master/manuscript/140_Triangulation.md)** — Criterio para validar tests que nacen en verde
+- **[Parameterized Tests in JUnit 5 (Baeldung)](https://www.baeldung.com/parameterized-tests-junit-5)** — Documentación de tests parametrizados en JUnit 5
+- **[JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)** — Documentación oficial de JUnit 5
+- **[Hamcrest – JavaHamcrest](https://hamcrest.org/JavaHamcrest/)** — Documentación de los matchers de Hamcrest
+- **[JaCoCo Maven Plugin](https://www.jacoco.org/jacoco/trunk/doc/maven.html)** — Documentación del plugin de cobertura
+
 ---
 
 ## 👩‍💻 Autora
 
 **[Jenny Sánchez Requejo](https://github.com/Jennydev-25)**
 
-[Volver arriba](#-kata-rpg-combat--combate-por-turnos-en-java)
+[Volver arriba](#-kata-rpg-combat)
